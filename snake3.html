@@ -45,14 +45,16 @@
                 },
                 clear: function () {
                     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                },
-                paint_object: function (x, y, color) {
-                    this.context.fillStyle = color;
-                    this.context.fillRect(x * block, y * block, block, block);
-                    this.context.strokeStyle = "black";
-                    this.context.strokeRect(x * block, y * block, block, block);
                 }
-                
+            }
+
+            function paint_object(x, y, color) {
+                context = gameObject.context;
+                context.fillStyle = color;
+                context.fillRect(x * block, y * block, block, block);
+                context.strokeStyle = "black";
+                context.strokeRect(x * block, y * block, block, block);
+
             }
 
             function gameUpdate() {
@@ -114,11 +116,11 @@
                 for(var i = 0; i < snake.length; i++) {
                     var c = snake[i];
                     //paint 10px wide cells
-                    gameObject.paint_object(c.x, c.y, "#009ACD");
+                    paint_object(c.x, c.y, "#009ACD");
                 }
                 
                 //paint the food
-                gameObject.paint_object(food.x, food.y, "#FF0000");
+                paint_object(food.x, food.y, "#FF0000");
             }
 
             function check_collision(x, y, array)
