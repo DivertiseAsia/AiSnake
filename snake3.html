@@ -20,12 +20,12 @@
                 direction = "right";
 
                 gameObject.start();
-                creat_snake();
-                creat_food();
+                create_snake();
+                create_food();
 
                 //paint element of game
                 if(typeof game_loop != "undefined") clearInterval(game_loop);
-		        game_loop = setInterval(paint, 200);
+		        game_loop = setInterval(paint, 60);
             }
             
             var gameObject = {
@@ -35,7 +35,7 @@
                     this.canvas.height = 400;
                     this.context = this.canvas.getContext("2d");
                     document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-                    this.interval = setInterval(gameUpdate, 200);
+                    this.interval = setInterval(gameUpdate, 60);
                     window.addEventListener("keydown", function (e) {
                         gameObject.key = e.keyCode;
                     })
@@ -57,15 +57,15 @@
 
             function gameUpdate() {
                 gameObject.clear();
-                /*if (gameObject.key && gameObject.key == 37 && direction != "right") direction = "left";
+                if (gameObject.key && gameObject.key == 37 && direction != "right") direction = "left";
                 else if (gameObject.key && gameObject.key == 39 && direction != "left") direction = "right";
-                else if (gameObject.key && gameObject.key == 38 && direction != "up")  direction = "down";
-                else if (gameObject.key && gameObject.key == 40 && direction != "down") direction = "up";*/
+                else if (gameObject.key && gameObject.key == 38 && direction != "down")  direction = "up";
+                else if (gameObject.key && gameObject.key == 40 && direction != "up") direction = "down";
             }
 
             init();
 
-            function creat_snake() {
+            function create_snake() {
                 var length = 5;
                 snake = [];
 
@@ -75,7 +75,7 @@
                 }
             }
 
-            function creat_food() {
+            function create_food() {
                 food = {
                     x: Math.round(Math.random() * (400 - block) / block), 
                     y: Math.round(Math.random() * (400 - block) / block), 
@@ -93,6 +93,12 @@
                 if(direction == "up") snake_y--;
                 if(direction == "down") snake_y++;
 
+                if(snake_x == -1 || snake_x == 400/block || snake_y == -1 || snake_y == 400/block || check_collision(snake_x, snake_y, snake)) {
+                    //restart game
+                    init();
+                    return;
+                }
+
                 if(snake_x == food.x && snake_y == food.y) {
                     var tail = {x: snake_x, y: snake_y};
             
@@ -105,7 +111,7 @@
                 
                 snake.unshift(tail); //puts back the tail as the first cell
                 
-                for(var i = 0; i < snake.length; i + 2) {
+                for(var i = 0; i < snake.length; i++) {
                     var c = snake[i];
                     //paint 10px wide cells
                     gameObject.paint_object(c.x, c.y, "#009ACD");
@@ -113,6 +119,16 @@
                 
                 //paint the food
                 gameObject.paint_object(food.x, food.y, "#FF0000");
+            }
+
+            function check_collision(x, y, array)
+            {
+                for(var i = 0; i < array.length; i++)
+                {
+                    if(array[i].x == x && array[i].y == y)
+                    return true;
+                }
+                return false;
             }
         </script>
     </body>
