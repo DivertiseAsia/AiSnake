@@ -16,18 +16,24 @@
 
 <body>
     <script>
-        var direction, food, snake, score, level;
-        var block = 10, count, u;
+        var direction, food, snake, score, level, canvas_width, canvas_height;
+        var grid = 10, score_count, speed;
+        var snake_color = "#009ACD"; 
+        var food_color = "#FF0000";
+        var rim_color = "#ffffff";
+        var text_color = "#8B008B";
 
         function init() {
             direction = "right";
             score = 0;
             level = 1;
-            count = 5;
-            u = 10;
+            score_count = 5;
+            speed = 10;
+            canvas_width = 400;
+            canvas_height = 400;
 
             control.start();
-            create_snake();
+            create_snake(5);
             create_food();
         }
 
@@ -42,8 +48,7 @@
             }
         }
 
-        function create_snake() {
-            var length = 5;
+        function create_snake(length) {
             snake = [];
 
             //create a horizontal snake
@@ -54,14 +59,13 @@
 
         function create_food() {
             food = {
-                x: Math.round(Math.random() * (400 - block) / block),
-                y: Math.round(Math.random() * (400 - block) / block),
+                x: Math.round(Math.random() * (canvas_width - grid) / grid),
+                y: Math.round(Math.random() * (canvas_height - grid) / grid),
             };
         }
 
         function setup() {
-            createCanvas(400, 400);
-
+            createCanvas(canvas_width, canvas_height);
         }
 
         init();
@@ -69,9 +73,7 @@
             gameUdate();
             clear();
 
-            frameRate(u);
-
-            console.log(u)
+            frameRate(speed);
 
             var snake_x = snake[0].x;
             var snake_y = snake[0].y;
@@ -82,7 +84,7 @@
             if (direction == "up") snake_y--;
             if (direction == "down") snake_y++;
 
-            if (snake_x == -1 || snake_x == 400 / block || snake_y == -1 || snake_y == 400 / block || check_collision(snake_x, snake_y, snake)) {
+            if (snake_x == -1 || snake_x == canvas_width / grid || snake_y == -1 || snake_y == canvas_height / grid || check_collision(snake_x, snake_y, snake)) {
                 //restart game
                 init();
                 return;
@@ -97,7 +99,7 @@
                 score++;
 
                 //level up
-                if(score > count) {level++; count += 5; u += 5;}
+                if(score > score_count) {level++; score_count += 5; speed += 5;}
             } else {
                 var tail = snake.pop(); //pops out the last cell
                 tail.x = snake_x; tail.y = snake_y;
@@ -108,25 +110,25 @@
             for (var i = 0; i < snake.length; i++) {
                 var c = snake[i];
                 //paint 10px wide cells
-                fill("#009ACD");
-                rect(c.x * block, c.y * block, block, block);
-                stroke(51);
-                rect(c.x * block, c.y * block, block, block);
+                fill(snake_color);
+                rect(c.x * grid, c.y * grid, grid, grid);
+                stroke(rim_color);
+                rect(c.x * grid, c.y * grid, grid, grid);
             }
 
             //paint the food
-            rect(food.x * block, food.y * block, block, block);
-            fill("#FF0000");
-            stroke(51);
-            rect(food.x * block, food.y * block, block, block);
+            rect(food.x * grid, food.y * grid, grid, grid);
+            fill(food_color);
+            stroke(rim_color);
+            rect(food.x * grid, food.y * grid, grid, grid);
 
             //draw score and level
             var score_text = "Score: " + score;
             var level_text = "Level: " + level;
 
-            fill("#8B008B")
-            text(score_text, 5, 400 - 5);
-            text(level_text, 60, 400 - 5);
+            fill(text_color)
+            text(score_text, 5, canvas_height - 5);
+            text(level_text, 60, canvas_height - 5);
         }
 
         function check_collision(x, y, array) {
